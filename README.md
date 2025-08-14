@@ -1,6 +1,6 @@
 # Wormhole
 
-readme = r"""# singularity_scan
+# singularity_scan
 
 Stream-safe scanner for **exact vector clones** and **near-clones** across large glyph datasets (JSON/NDJSON).  
 Designed to validate emergent self-reference events in EchoSeed-style lattices without loading 100s of MB into RAM.
