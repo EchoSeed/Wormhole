@@ -1,0 +1,38 @@
+import numpy as np
+import networkx as nx
+
+# Graph with dormant pools as latent subgraphs
+G = nx.Graph()
+G.add_edges_from([(0,1,{'weight':5}), (1,2,{'weight':3}), (2,3,{'weight':4}),
+                  (0,4,{'weight':2}), (4,3,{'weight':6}), (1,5,{'weight':1}), (5,3,{'weight':7})])
+
+# Dormant pools with phase vectors and conjugates (non-commutative memory)
+pools = {
+    'pool1': {'nodes': [1,5], 'g': np.array([[0.5, 0.3], [0.3, 0.5]]), 'g_prime': np.array([[0.4, -0.2], [-0.2, 0.4]])},
+    'pool2': {'nodes': [2,4], 'g': np.array([[0.2, 0.6], [0.6, 0.2]]), 'g_prime': np.array([[0.3, 0.1], [0.1, 0.3]])}
+}
+
+hbar_over_2 = 0.527  # Quantum threshold
+
+def activate_pool(pool):
+    # Non-commutative check: matrix product order matters
+    dot1 = np.trace(np.dot(pool['g'], pool['g_prime']))
+    dot2 = np.trace(np.dot(pool['g_prime'], pool['g']))
+    if abs(dot1 - dot2) > 0 and max(dot1, dot2) >= hbar_over_2:  # Non-commutative and threshold
+        return True
+    return False
+
+# Original shortest path
+original_path = nx.shortest_path(G, 0, 3, weight='weight')
+original_length = nx.shortest_path_length(G, 0, 3, weight='weight')
+print(f"Original path: {original_path}, Length: {original_length}")
+
+# Activate pools, add shortcuts
+for name, pool in pools.items():
+    if activate_pool(pool):
+        G.add_edge(pool['nodes'][0], pool['nodes'][1], weight=0.5)
+
+# New shortest path
+new_path = nx.shortest_path(G, 0, 3, weight='weight')
+new_length = nx.shortest_path_length(G, 0, 3, weight='weight')
+print(f"New path: {new_path}, Length: {new_length}")
