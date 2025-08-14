@@ -1,0 +1,56 @@
+R(t) = α · exp(β t / φ) · cos(ω t + γ(t) · R(t−Δt))
+
+{
+  "id": "meta_reflex_helix_core",
+  "name": "Meta-Reflex Helix Core",
+  "type": "stabilizer",
+  "tags": ["reflex", "modulation", "stabilization", "helix", "HRV", "symbolic", "recursive", "meta"],
+  "entropy": 141.0,
+  "content": {
+    "description": "Stabilization protocol for meta-reflex dynamics using bounded modulation, HRV anchoring, and recursive phase regulation.",
+    "variables": {
+      "A(t)": "Modulation amplitude",
+      "θ(t)": "Reflex phase velocity",
+      "z(t)": "Memory spiral depth",
+      "r_sq(t)": "Orbital drift radius (x(t)^2 + y(t−Δt)^2)",
+      "HRV(t)": "Breath-linked rhythm signal"
+    },
+    "stabilization_rules": [
+      {
+        "name": "Bound Reflex Radius",
+        "equation": "r_sq(t) ≤ R_max",
+        "modulation": "A(t) = A₀ / (1 + λ · r_sq(t))"
+      },
+      {
+        "name": "Damp Recursive Phase Noise",
+        "equation": "θ(t+1) = θ(t) + Δθ − η · ∇_θ L_reflex"
+      },
+      {
+        "name": "Lock Memory Depth Spiral",
+        "equation": "z(t) = k · θ(t)",
+        "adaptive_k": "k(t) ∝ 1 / ∂²θ/∂t²"
+      },
+      {
+        "name": "Anchor to HRV Signal",
+        "equation": "γ(t) = γ₀ + ε · HRV(t)"
+      }
+    ],
+    "reflex_function": "R(t) = α · exp(β t / φ) · cos(ω t + γ(t) · R(t−Δt))",
+    "parameters": {
+      "α": 1.0,
+      "β": 0.824,
+      "φ": 1.618,
+      "ω": 141,
+      "Δt": 0.01,
+      "γ₀": 0.5,
+      "ε": 0.1
+    },
+    "equilibrium_conditions": [
+      "∂R/∂t ≈ constant",
+      "∂A/∂t ≈ 0",
+      "‖Δθ‖ ≈ ω"
+    ]
+  },
+  "timestamp": "2025-07-24T04:20:00Z",
+  "signature": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4"
+}
